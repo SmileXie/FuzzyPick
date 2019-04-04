@@ -60,3 +60,18 @@ def pick(query, candicates):
     rst = dict(zip(candicates, scores))
     sorted_rst = sorted(rst.items(), key=operator.itemgetter(1), reverse=True)
     return sorted_rst
+
+
+def match_score_weights(s1, s2, s2_weights):
+    return match_score(s1, s2) * s2_weights
+
+
+def pick_with_weights(query, candicates):
+    # candicates: {'string1': value1, 'string2': value2}
+    scores = []
+    for cdd in candicates.keys():
+        s = match_score_weights(query, cdd, candicates[cdd])
+        scores.append(s)
+    rst = dict(zip(candicates.keys(), scores))
+    sorted_rst = sorted(rst.items(), key=operator.itemgetter(1), reverse=True)
+    return sorted_rst

@@ -32,3 +32,11 @@ Non-ASCII characters can be supported as well.
 >>> fp.pick(q, candidates)
 [('明天8点来上班', 100.0), ('明天九点来上班', 92.85714285714286), ('后天十二点来上班', 80.0), ('明天别来上班了', 78.57142857142857)]
 ```
+The candidates can be assigned with a weight
+```python
+>>> q = 'hello world'
+>>> can = {'hewlo world': 0.9, 'happy new year': 0.1, 'hello world': 0.8, 'adfafadfiasdf': 0.2}
+>>> s = fp.pick_with_weights(q, can)
+>>> s
+[('hewlo world', 85.9090909090909), ('hello world', 80.0), ('adfafadfiasdf', 10.0), ('happy new year', 5.600000000000001)]
+```

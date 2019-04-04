@@ -1,4 +1,5 @@
 import fuzzypick as fp
+# from datetime import datetime
 
 
 def main():
@@ -16,6 +17,20 @@ def main():
     can = ('hewlo world', 'happy new year', 'hello world', 'adfafadfiasdf')
     s = fp.pick(q, can)
     print('sorted %s' % s)
+
+    can = {'hewlo world': 0.9, 'happy new year': 0.1, 'hello world': 0.8,
+           'adfafadfiasdf': 0.2}
+    s = fp.pick_with_weights(q, can)
+    print('sorted %s' % s)
+
+
+"""
+    before = datetime.now()
+    can = ['test string'] * 500000
+    s = fp.pick(q, can)
+    after = datetime.now()
+    print('elapse time %s' % str((after - before).seconds))
+"""
 
 
 if __name__ == "__main__":
