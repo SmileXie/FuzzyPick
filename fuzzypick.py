@@ -46,9 +46,13 @@ def levenshtein_distance(s1, s2, costs=(1, 1, 1)):
     return dist[row][col]
 
 
-def match_score(s1, s2):
-    dist = levenshtein_distance(s1, s2)
-    sum_len = len(s1) + len(s2)
+def match_score(s1, s2, costs=(1, 1, 1)):
+    dist = levenshtein_distance(s1, s2, costs)
+    # if s1 = 'xyz' s2 = 'abcdefg' cost=(1, 0, 1)
+    # the dist would be 3, and the cost would be 10 - 3 / 10 = 70%
+    # which is not appropriate
+    # so use cost as a weight
+    sum_len = len(s1) * costs[0] + len(s2) * costs[1]
     return (sum_len - dist) / sum_len * 100
 
 
@@ -62,16 +66,24 @@ def pick(query, candicates):
     return sorted_rst
 
 
-def match_score_weights(s1, s2, s2_weights):
-    return match_score(s1, s2) * s2_weights
+def match_score_weights(s1, s2, s2_weights, costs=(1, 1, 1)):
+    return match_score(s1, s2, costs) * s2_weights
 
 
-def pick_with_weights(query, candicates):
+def pick_with_weights(query, candicates, costs=(1, 1, 1)):
     # candicates: {'string1': value1, 'string2': value2}
     scores = []
     for cdd in candicates.keys():
-        s = match_score_weights(query, cdd, candicates[cdd])
+        s = match_score_weights(query, cdd, candicates[cdd], costs)
         scores.append(s)
     rst = dict(zip(candicates.keys(), scores))
     sorted_rst = sorted(rst.items(), key=operator.itemgetter(1), reverse=True)
     return sorted_rst
+
+
+# some words are exactly matched in a long sentence, the match_score
+# would be very low, but it should be picked.
+# this method is designed to applied in this scenario.
+# cut down the 'deletion cost'
+def pick_adaptive(query, candicates):
+    pick_with_weights(query, candicates, costs=(1, 0.1, 1))
