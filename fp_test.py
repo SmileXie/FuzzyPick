@@ -1,5 +1,4 @@
 import fuzzypick as fp
-# from datetime import datetime
 
 
 def main():
@@ -18,19 +17,27 @@ def main():
     s = fp.pick(q, can)
     print('sorted %s' % s)
 
-    can = {'hewlo world': 0.9, 'happy new year': 0.1, 'hello world': 0.8,
-           'adfafadfiasdf': 0.2}
-    s = fp.pick_with_weights(q, can)
-    print('sorted %s' % s)
+    d1, s1 = fp.levenshtein_distance('hello world', 'Spencer, hello world'), \
+        fp.match_score('hello world', 'Spencer, hello world')
+    d2 = fp.levenshtein_distance(
+        'hello world', 'Spencer, hello world', costs=(1, 0, 1)
+    )
+    s2 = fp.match_score('hello world', 'Spencer, hello world', costs=(1, 0, 1))
 
+    print('d1 d2: %d %d' % (d1, d2))
+    print('s1 s2: %d %d' % (s1, s2))
 
-"""
-    before = datetime.now()
-    can = ['test string'] * 500000
-    s = fp.pick(q, can)
-    after = datetime.now()
-    print('elapse time %s' % str((after - before).seconds))
-"""
+    keywords = 'aaaaaaaaaaa'
+    summary = '【RCC_V3.6_R1P4T1.70】【在线播放器】进土豆网页，打开一个视频，点击网页的\
+        “跳过广告”，再点击播放器的“加载前一个页面”返回刚才的视频链接，出现：之后点击“播放”\
+        ，播放器的内容是一片白色'
+    score = fp.match_score_weights(keywords, summary, 1.0,
+                                   costs=(1, 0, 1))
+    print('score: ' + str(score))
+
+    query = 'asdf'
+    test_str = 'qerfaas9iqfasdfkllkj'
+    print(fp.highlight_query(query, test_str))
 
 
 if __name__ == "__main__":

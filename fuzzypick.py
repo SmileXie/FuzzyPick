@@ -87,3 +87,19 @@ def pick_with_weights(query, candicates, costs=(1, 1, 1)):
 # cut down the 'deletion cost'
 def pick_adaptive(query, candicates):
     pick_with_weights(query, candicates, costs=(1, 0.1, 1))
+
+
+# make 'query' in 'str' highlighted
+def highlight_query(query, full_str):
+    rst_str = ''
+    for q_f in full_str:
+        for q_c in query:
+            if q_f == q_c:
+                rst_str += '\033[1;33m'
+                rst_str += q_c
+                rst_str += '\033[0m'
+                break
+        else:
+            rst_str += q_f
+
+    return rst_str
